@@ -217,6 +217,17 @@ try {
   await page.locator("#parsing").scrollIntoViewIfNeeded();
   await photo("reduced-motion");
   await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.evaluate(() => {
+    for (let i = 0; i < 3; i++) {
+      dispatchEvent(new PageTransitionEvent("pagehide", { persisted: true }));
+      dispatchEvent(new PageTransitionEvent("pageshow", { persisted: true }));
+    }
+  });
+  assert.equal(await page.locator(".scene-controls").count(), 2);
+  assert.equal(await page.locator(".parsing-links").count(), 1);
+  assert.equal(await page.locator(".ocr-box").count(), 1);
+  report.historyRestore =
+    "Three persisted history cycles keep one motion owner and no duplicate UI.";
   await ready("/contact");
   let relayCalls = 0,
     contactCalls = 0;

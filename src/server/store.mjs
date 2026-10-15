@@ -96,7 +96,11 @@ export class RedisStore {
     return count;
   }
   async saveContact(contact) {
-    await this.set(`contact:${contact.requestId}`, contact, 90 * 86400);
+    const remaining = Math.ceil(
+      (Date.parse(contact.createdAt) + 90 * 86400_000 - Date.now()) / 1000,
+    );
+    if (remaining <= 0) throw new Error("record_expired");
+    await this.set(`contact:${contact.requestId}`, contact, remaining);
     await this.command(
       "ZADD",
       this.key("contacts"),

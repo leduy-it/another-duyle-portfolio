@@ -1,0 +1,29 @@
+{
+  "method": "Sequential same-browser headless Chrome samples of a stationary desktop hero, after fonts and reveal settle. Diagnostic sample, not a production/device benchmark.",
+  "results": [
+    {
+      "name": "authored_foundable",
+      "url": "https://michalle.foundable.app/",
+      "windowMs": 3000,
+      "frames": 181,
+      "p95FrameMs": 16.800000000000182,
+      "over50ms": 0,
+      "taskSeconds": 0.488817,
+      "layoutSeconds": 0,
+      "styleSeconds": 0,
+      "scriptSeconds": 0.197218
+    },
+    {
+      "name": "independent_export",
+      "url": "http://localhost:4317/",
+      "windowMs": 3000,
+      "frames": 180,
+      "p95FrameMs": 16.799999999999727,
+      "over50ms": 0,
+      "taskSeconds": 0.20909,
+      "layoutSeconds": 0,
+      "styleSeconds": 0,
+      "scriptSeconds": 0.073932
+    }
+  ]
+}

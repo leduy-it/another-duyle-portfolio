@@ -1,6 +1,6 @@
 {
   "base": "http://localhost:4317",
-  "checkedAt": "2026-10-15T14:27:43.784Z",
+  "checkedAt": "2026-10-15T14:33:48.587Z",
   "pages": [
     {
       "path": "/",
@@ -359,5 +359,6 @@
     "One dispatch; stored acknowledgement; no inbox-delivery claim; draft cleared. Provider calls were intercepted.",
     "Service failure preserves the draft across a reload."
   ],
+  "historyRestore": "Three persisted history cycles keep one motion owner and no duplicate UI.",
   "javascriptErrors": []
 }

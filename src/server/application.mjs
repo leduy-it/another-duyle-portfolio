@@ -100,13 +100,15 @@ export function createApplication({
     if (!store) return failure("storage_unavailable", 503);
     const identity = fingerprint(request);
     const contentHash = hash(JSON.stringify(input));
-    const previous = await store.getContact(input.requestId);
-    if (previous) {
+    const savedReceipt = async (previous) => {
       if (
         previous.identity !== identity ||
         previous.contentHash !== contentHash
       )
         return failure("request_conflict", 409);
+      // A prior write may have stored the body but failed to index it.
+      // Confirm both writes before telling the browser it can clear its draft.
+      await store.saveContact(previous);
       return json(
         {
           status:
@@ -117,7 +119,9 @@ export function createApplication({
         },
         202,
       );
-    }
+    };
+    const previous = await store.getContact(input.requestId);
+    if (previous) return savedReceipt(previous);
     if (!(await limit(request, "contact", 5)))
       return failure("rate_limited", 429);
     const lock = `lock:${input.requestId}`;
@@ -125,8 +129,7 @@ export function createApplication({
       return json({ status: "processing", requestId: input.requestId }, 202);
     try {
       const duplicate = await store.getContact(input.requestId);
-      if (duplicate)
-        return json({ status: "stored", requestId: input.requestId }, 202);
+      if (duplicate) return savedReceipt(duplicate);
       const record = {
         ...input,
         createdAt: new Date(now()).toISOString(),

@@ -2,14 +2,22 @@ import { initMotion } from "./motion.mjs";
 import { initContact } from "./contact.mjs";
 
 const preference = matchMedia("(prefers-reduced-motion: reduce)");
-let dispose = initMotion(preference.matches);
-preference.addEventListener("change", (event) => {
-  dispose();
-  dispose = initMotion(event.matches);
+let dispose = null;
+function stopMotion() {
+  dispose?.();
+  dispose = null;
+}
+function startMotion() {
+  stopMotion();
+  dispose = initMotion(preference.matches);
+}
+startMotion();
+preference.addEventListener("change", () => {
+  if (dispose) startMotion();
 });
-addEventListener("pagehide", () => dispose(), { once: true });
+addEventListener("pagehide", stopMotion);
 addEventListener("pageshow", (event) => {
-  if (event.persisted) dispose = initMotion(preference.matches);
+  if (event.persisted) startMotion();
 });
 const toggle = document.querySelector(".menu-btn"),
   navigation = document.querySelector("#nav");
