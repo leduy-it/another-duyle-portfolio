@@ -80,9 +80,22 @@ export function createApplication({
     ]
       .filter(Boolean)
       .map((host) => `https://${host}`);
+    // Vercel metadata names one production domain, not every attached alias.
+    const additionalOrigins = (env.SITE_ORIGINS || "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter((value) => {
+        try {
+          const url = new URL(value);
+          return url.protocol === "https:" && url.origin === value;
+        } catch {
+          return false;
+        }
+      });
     return (
       origin === canonical ||
       deploymentOrigins.includes(origin) ||
+      additionalOrigins.includes(origin) ||
       (env.NODE_ENV !== "production" &&
         origin === own &&
         /^(localhost|127\.0\.0\.1)$/.test(new URL(own).hostname))
