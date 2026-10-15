@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.vercel/
+.env*
+!.env.example
+evidence/*.png
+evidence/*.webm
+evidence/*.zip
+playwright-report/
+test-results/
+*.log

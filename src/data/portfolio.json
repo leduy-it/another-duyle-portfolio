@@ -1,0 +1,75 @@
+{
+  "identity": {
+    "name": "Michael Le",
+    "fullName": "Lê Văn Duy",
+    "email": "levduyit@gmail.com",
+    "github": "https://github.com/leduy-it",
+    "linkedin": "https://www.linkedin.com/in/leduy-it/",
+    "original": "https://duyle.me"
+  },
+  "experience": [
+    {
+      "slug": "growtrics",
+      "title": "Full-Stack AI Engineer",
+      "company": "GrowtricsAI",
+      "dates": "Dec 2025 – Present",
+      "quote": "Solo-engineer pace at a startup — propose, build, ship, iterate crazy fast across the whole stack: data pipelines, agents, video generation, all the way to the UI students actually touch."
+    },
+    {
+      "slug": "gmo-runsystem",
+      "title": "AI Engineer",
+      "company": "GMO-Z.com RUNSYSTEM",
+      "dates": "Aug 2024 – Nov 2025",
+      "quote": "From 94% to 98% accuracy and ~40% lower latency — every millisecond counts when banks, hospitals, and government agencies depend on your OCR."
+    },
+    {
+      "slug": "smartpay",
+      "title": "AI Engineer",
+      "company": "SmartPay JSC",
+      "dates": "Mar 2024 – Aug 2024",
+      "quote": "First taste of fintech: real-time fraud detection that retrains itself, and an LLM that reads contracts so the ops team doesn't have to."
+    }
+  ],
+  "writing": [
+    {
+      "title": "Agentic AI changed what I have to prove before a question ships",
+      "slug": "agentic-gates-precision-coverage-and-cost",
+      "date": "2026-09-30",
+      "excerpt": "At Growtrics, the hard part was not making an agent produce more Q&A. It was deciding which answers deserved to exist, at what coverage and cost.",
+      "readingMinutes": 8,
+      "tags": ["agentic-ai", "evaluation", "production"]
+    },
+    {
+      "title": "Why we re-trained the OCR backbone instead of fine-tuning",
+      "slug": "why-we-retrained-the-ocr-backbone",
+      "date": "2026-04-18",
+      "excerpt": "Fine-tuning looked faster on paper. The mistakes kept returning in exactly the places that mattered.",
+      "readingMinutes": 5,
+      "tags": ["ocr", "ml", "production"]
+    },
+    {
+      "title": "Shipping a Text-to-SQL agent that doesn't hallucinate column names",
+      "slug": "shipping-a-text-to-sql-agent-that-doesnt-hallucinate-column-names",
+      "date": "2026-03-02",
+      "excerpt": "The first version sounded brilliant right up until it invented a field that did not exist. Confidence is cheap when the schema is not watching.",
+      "readingMinutes": 6,
+      "tags": ["agents", "llm", "sql"]
+    },
+    {
+      "title": "From SmartPay to GMO: 18 months of AI engineering in Vietnam",
+      "slug": "from-smartpay-to-gmo-18-months-of-ai-engineering-in-vietnam",
+      "date": "2025-11-26",
+      "excerpt": "Eighteen months is not enough time to become wise. It is enough time to lose a few illusions about speed, certainty, and what good engineering feels like up close.",
+      "readingMinutes": 6,
+      "tags": ["career", "vietnam", "ai-engineering"]
+    },
+    {
+      "title": "What 40% latency looks like when a bank is your customer",
+      "slug": "what-40-percent-latency-looks-like-when-a-bank-is-your-customer",
+      "date": "2025-09-14",
+      "excerpt": "Latency sounds abstract until someone on the customer call starts counting the seconds out loud. Then it becomes a feeling in your chest.",
+      "readingMinutes": 5,
+      "tags": ["performance", "production", "trust"]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "capturedAt": "2026-10-15",
+  "reference": "https://michalle.foundable.app/",
+  "canonical": "https://duyle.me",
+  "entries": [
+    {
+      "file": "src/pages/home.html",
+      "source": "https://michalle.foundable.app/",
+      "sha256": "27d4054dceb6afb02729fa4eff62718732bc6d5f42126503f187d3d761473d7b"
+    },
+    {
+      "file": "src/pages/writing.html",
+      "source": "https://michalle.foundable.app/writing",
+      "sha256": "e7c49165f9ab9bb89e18ccbd3505d434cb82627105a840882ee418b10e15fb22"
+    },
+    {
+      "file": "src/pages/projects.html",
+      "source": "https://michalle.foundable.app/projects",
+      "sha256": "c54b1dce92e5c4aa2039f517ae354d8c48d256112beff5f52f13692cb3dbf1ca"
+    },
+    {
+      "file": "src/pages/about.html",
+      "source": "https://michalle.foundable.app/about",
+      "sha256": "3fd9449b4579e5175dd053e540bf35d357dcbac75cde274e261990d34e8f5633"
+    },
+    {
+      "file": "src/pages/experience.html",
+      "source": "https://michalle.foundable.app/experience",
+      "sha256": "b94fad4d2a18f1fb54c831a35ec3f98389ed88594c097e8304539f00d137208a"
+    },
+    {
+      "file": "src/pages/contact.html",
+      "source": "https://michalle.foundable.app/contact",
+      "sha256": "d849fd3cb78375860c986e6544040f91dc17d1b5575a5783dc095a4d0a4eb1a4"
+    },
+    {
+      "file": "src/pages/life.html",
+      "source": "https://michalle.foundable.app/life",
+      "sha256": "9d372fb5de5cb65049ce6e72d3389fdbd80d7efe944f53138c74c3fd34791b16"
+    },
+    {
+      "file": "src/data/portfolio.json",
+      "source": "Public career and writing data from the owner’s duyle.me portfolio checkout, reduced to links and metadata.",
+      "sha256": "41af34ceb8540150a9a3a6a4cf4791b1b4699dff8e6cec640eed9606a9fb10b0"
+    }
+  ],
+  "designOwnership": "The user built the Foundable app; this is an independent export of their authored design, not an unrelated template.",
+  "retainedFonts": ["Inter Tight", "JetBrains Mono", "Caveat"],
+  "retainedPalette": {
+    "paper": "#fafaf8",
+    "ink": "#0b0b0c",
+    "signal": "#2f5bff",
+    "signalSecondary": "#8fa6ff"
+  }
+}

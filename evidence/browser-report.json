@@ -1,0 +1,363 @@
+{
+  "base": "http://localhost:4317",
+  "checkedAt": "2026-10-15T14:27:43.784Z",
+  "pages": [
+    {
+      "path": "/",
+      "font": "\"Inter Tight\", system-ui, sans-serif",
+      "paper": "#fafaf8",
+      "cobalt": "#2f5bff"
+    },
+    {
+      "path": "/about",
+      "font": "\"Inter Tight\", system-ui, sans-serif",
+      "paper": "#fafaf8",
+      "cobalt": "#2f5bff"
+    },
+    {
+      "path": "/experience",
+      "font": "\"Inter Tight\", system-ui, sans-serif",
+      "paper": "#fafaf8",
+      "cobalt": "#2f5bff"
+    },
+    {
+      "path": "/projects",
+      "font": "\"Inter Tight\", system-ui, sans-serif",
+      "paper": "#fafaf8",
+      "cobalt": "#2f5bff"
+    },
+    {
+      "path": "/writing",
+      "font": "\"Inter Tight\", system-ui, sans-serif",
+      "paper": "#fafaf8",
+      "cobalt": "#2f5bff"
+    },
+    {
+      "path": "/life",
+      "font": "\"Inter Tight\", system-ui, sans-serif",
+      "paper": "#fafaf8",
+      "cobalt": "#2f5bff"
+    },
+    {
+      "path": "/contact",
+      "font": "\"Inter Tight\", system-ui, sans-serif",
+      "paper": "#fafaf8",
+      "cobalt": "#2f5bff"
+    }
+  ],
+  "story": [
+    "01 STUCK",
+    "02 LISTENING",
+    "03 READING",
+    "04 NEXT STEP"
+  ],
+  "parsing": [
+    {
+      "state": "0",
+      "label": "Messy input",
+      "boxes": 0,
+      "traces": 0,
+      "schemaChecked": false,
+      "embeddingVisible": false
+    },
+    {
+      "state": "1",
+      "label": "Crop & segment",
+      "boxes": 4,
+      "traces": 0,
+      "schemaChecked": false,
+      "embeddingVisible": false
+    },
+    {
+      "state": "2",
+      "label": "Parse & clean",
+      "boxes": 4,
+      "traces": 2,
+      "schemaChecked": false,
+      "embeddingVisible": false
+    },
+    {
+      "state": "3",
+      "label": "Chunk with provenance",
+      "boxes": 4,
+      "traces": 3,
+      "schemaChecked": true,
+      "embeddingVisible": false
+    },
+    {
+      "state": "4",
+      "label": "Embed",
+      "boxes": 4,
+      "traces": 4,
+      "schemaChecked": true,
+      "embeddingVisible": true
+    },
+    {
+      "state": "5",
+      "label": "Retrieve & answer",
+      "boxes": 4,
+      "traces": 5,
+      "schemaChecked": true,
+      "embeddingVisible": true
+    }
+  ],
+  "mobile": [
+    {
+      "width": 375,
+      "stage": 0,
+      "active": [
+        {
+          "top": 341.90960693359375,
+          "bottom": 677.8716430664062,
+          "left": 56.63127899169922,
+          "right": 318.3687057495117,
+          "viewport": 844,
+          "width": 375
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "stage": 1,
+      "active": [
+        {
+          "top": 349.890625,
+          "bottom": 669.890625,
+          "left": 67.5,
+          "right": 307.5,
+          "viewport": 844,
+          "width": 375
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "stage": 2,
+      "active": [
+        {
+          "top": 415.140625,
+          "bottom": 604.625,
+          "left": 20,
+          "right": 355,
+          "viewport": 844,
+          "width": 375
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "stage": 3,
+      "active": [
+        {
+          "top": 384.0625,
+          "bottom": 657.8125,
+          "left": 20,
+          "right": 355,
+          "viewport": 844,
+          "width": 375
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "stage": 4,
+      "active": [
+        {
+          "top": 277.78125,
+          "bottom": 487.609375,
+          "left": 20,
+          "right": 355,
+          "viewport": 844,
+          "width": 375
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "stage": 5,
+      "active": [
+        {
+          "top": 427.171875,
+          "bottom": 592.609375,
+          "left": 20,
+          "right": 355,
+          "viewport": 844,
+          "width": 375
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "stage": 0,
+      "active": [
+        {
+          "top": 323.7936706542969,
+          "bottom": 673.175048828125,
+          "left": 58.900299072265625,
+          "right": 331.0997009277344,
+          "viewport": 844,
+          "width": 390
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "stage": 1,
+      "active": [
+        {
+          "top": 332.09375,
+          "bottom": 664.875,
+          "left": 70.203125,
+          "right": 319.796875,
+          "viewport": 844,
+          "width": 390
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "stage": 2,
+      "active": [
+        {
+          "top": 403.75,
+          "bottom": 593.234375,
+          "left": 20,
+          "right": 370,
+          "viewport": 844,
+          "width": 390
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "stage": 3,
+      "active": [
+        {
+          "top": 372.65625,
+          "bottom": 646.40625,
+          "left": 20,
+          "right": 370,
+          "viewport": 844,
+          "width": 390
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "stage": 4,
+      "active": [
+        {
+          "top": 254.984375,
+          "bottom": 464.8125,
+          "left": 20,
+          "right": 370,
+          "viewport": 844,
+          "width": 390
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "stage": 5,
+      "active": [
+        {
+          "top": 415.765625,
+          "bottom": 581.203125,
+          "left": 20,
+          "right": 370,
+          "viewport": 844,
+          "width": 390
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "stage": 0,
+      "active": [
+        {
+          "top": 306.7601318359375,
+          "bottom": 670.7086181640625,
+          "left": 242.22592163085938,
+          "right": 525.7740478515625,
+          "viewport": 844,
+          "width": 768
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "stage": 1,
+      "active": [
+        {
+          "top": 315.40625,
+          "bottom": 662.0625,
+          "left": 254,
+          "right": 514,
+          "viewport": 844,
+          "width": 768
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "stage": 2,
+      "active": [
+        {
+          "top": 393.296875,
+          "bottom": 584.1875,
+          "left": 174,
+          "right": 594,
+          "viewport": 844,
+          "width": 768
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "stage": 3,
+      "active": [
+        {
+          "top": 351.15625,
+          "bottom": 626.3125,
+          "left": 174,
+          "right": 594,
+          "viewport": 844,
+          "width": 768
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "stage": 4,
+      "active": [
+        {
+          "top": 235.484375,
+          "bottom": 445.3125,
+          "left": 174,
+          "right": 594,
+          "viewport": 844,
+          "width": 768
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "stage": 5,
+      "active": [
+        {
+          "top": 407.609375,
+          "bottom": 569.859375,
+          "left": 174,
+          "right": 594,
+          "viewport": 844,
+          "width": 768
+        }
+      ]
+    }
+  ],
+  "contact": [
+    "One dispatch; stored acknowledgement; no inbox-delivery claim; draft cleared. Provider calls were intercepted.",
+    "Service failure preserves the draft across a reload."
+  ],
+  "javascriptErrors": []
+}
