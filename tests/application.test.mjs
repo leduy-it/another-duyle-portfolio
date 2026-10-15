@@ -43,6 +43,30 @@ test("contact rejects a cross-origin request before storing private text", async
   );
   assert.equal((await store.listContacts()).length, 0);
 });
+
+test("contact accepts its production alias when the proxy request URL differs", async () => {
+  const app = createApplication({
+    env: {
+      ...env,
+      NODE_ENV: "production",
+      VERCEL_PROJECT_PRODUCTION_URL: "another-duyle-portfolio.vercel.app",
+      VERCEL_URL: "another-duyle-portfolio-build-owner.vercel.app",
+    },
+    store: new MemoryStore(),
+  });
+  const proxied = new Request(
+    "http://another-duyle-portfolio-build-owner.vercel.app/api/contact",
+    {
+      method: "POST",
+      headers: {
+        Origin: "https://another-duyle-portfolio.vercel.app",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(draft),
+    },
+  );
+  assert.equal((await app(proxied)).status, 202);
+});
 test("contact rejects invalid reply-to, oversized text and unknown fields", async () => {
   const { app } = setup();
   for (const change of [

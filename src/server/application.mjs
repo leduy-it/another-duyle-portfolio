@@ -82,11 +82,10 @@ export function createApplication({
       .map((host) => `https://${host}`);
     return (
       origin === canonical ||
-      (origin === own &&
-        (own === canonical ||
-          deploymentOrigins.includes(own) ||
-          (env.NODE_ENV !== "production" &&
-            /^(localhost|127\.0\.0\.1)$/.test(new URL(own).hostname))))
+      deploymentOrigins.includes(origin) ||
+      (env.NODE_ENV !== "production" &&
+        origin === own &&
+        /^(localhost|127\.0\.0\.1)$/.test(new URL(own).hostname))
     );
   };
   const limit = async (request, type, maximum) =>
