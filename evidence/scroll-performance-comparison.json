@@ -1,0 +1,342 @@
+{
+  "method": "Sequential headless Chrome runs, CPU throttled 4x; 2800ms scripted rAF scroll per scene, same desktop/mobile viewports. Diagnostic comparison on this machine, not a guarantee for physical devices. No browser suite running during these samples. Both versions showed no frames over 50ms in these samples.",
+  "baselineCommit": "eefcecc315d714916fbf0f865ee76269b4792830",
+  "before": {
+    "checkedAt": "2026-10-16T10:08:56.839Z",
+    "cpuSlowdown": 4,
+    "profiles": [
+      {
+        "mobile": false,
+        "selector": ".hero",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {
+          "story": 336,
+          "parsing": 2184,
+          "other": 2184
+        },
+        "TaskDuration": 1.6918,
+        "ScriptDuration": 0.4336,
+        "LayoutDuration": 0.1634,
+        "RecalcStyleDuration": 0.088,
+        "LayoutCount": 1176,
+        "RecalcStyleCount": 1512
+      },
+      {
+        "mobile": false,
+        "selector": "#story",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {
+          "story": 336,
+          "parsing": 2016,
+          "other": 2184
+        },
+        "TaskDuration": 0.9331,
+        "ScriptDuration": 0.1947,
+        "LayoutDuration": 0.1663,
+        "RecalcStyleDuration": 0.165,
+        "LayoutCount": 1176,
+        "RecalcStyleCount": 1250
+      },
+      {
+        "mobile": false,
+        "selector": "#parsing",
+        "frames": {
+          "count": 168,
+          "p95": 16.799999999999272,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {
+          "story": 334,
+          "parsing": 2171,
+          "other": 2171
+        },
+        "TaskDuration": 1.8487,
+        "ScriptDuration": 0.216,
+        "LayoutDuration": 0.2366,
+        "RecalcStyleDuration": 0.7734,
+        "LayoutCount": 1337,
+        "RecalcStyleCount": 1468
+      },
+      {
+        "mobile": false,
+        "selector": "#intro",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {
+          "story": 336,
+          "parsing": 2184,
+          "other": 2184
+        },
+        "TaskDuration": 0.7783,
+        "ScriptDuration": 0.1837,
+        "LayoutDuration": 0.1664,
+        "RecalcStyleDuration": 0.079,
+        "LayoutCount": 1171,
+        "RecalcStyleCount": 1235
+      },
+      {
+        "mobile": true,
+        "selector": ".hero",
+        "frames": {
+          "count": 169,
+          "p95": 16.800000000000182,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {
+          "story": 336,
+          "parsing": 336,
+          "other": 2184
+        },
+        "TaskDuration": 1.0833,
+        "ScriptDuration": 0.2358,
+        "LayoutDuration": 0.0996,
+        "RecalcStyleDuration": 0.0533,
+        "LayoutCount": 168,
+        "RecalcStyleCount": 672
+      },
+      {
+        "mobile": true,
+        "selector": "#story",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {
+          "story": 336,
+          "parsing": 168,
+          "other": 2184
+        },
+        "TaskDuration": 0.9806,
+        "ScriptDuration": 0.1415,
+        "LayoutDuration": 0.09,
+        "RecalcStyleDuration": 0.1347,
+        "LayoutCount": 168,
+        "RecalcStyleCount": 411
+      },
+      {
+        "mobile": true,
+        "selector": "#parsing",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {
+          "story": 336,
+          "parsing": 336,
+          "other": 2184
+        },
+        "TaskDuration": 1.4494,
+        "ScriptDuration": 0.1572,
+        "LayoutDuration": 0.0937,
+        "RecalcStyleDuration": 0.6265,
+        "LayoutCount": 263,
+        "RecalcStyleCount": 671
+      },
+      {
+        "mobile": true,
+        "selector": "#intro",
+        "frames": {
+          "count": 169,
+          "p95": 16.799999999999272,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {
+          "story": 336,
+          "parsing": 336,
+          "other": 2184
+        },
+        "TaskDuration": 0.6151,
+        "ScriptDuration": 0.1152,
+        "LayoutDuration": 0.0771,
+        "RecalcStyleDuration": 0.0478,
+        "LayoutCount": 169,
+        "RecalcStyleCount": 428
+      }
+    ]
+  },
+  "after": {
+    "checkedAt": "2026-10-16T10:15:31.969Z",
+    "cpuSlowdown": 4,
+    "profiles": [
+      {
+        "mobile": false,
+        "selector": ".hero",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {},
+        "TaskDuration": 0.7854,
+        "ScriptDuration": 0.0964,
+        "LayoutDuration": 0,
+        "RecalcStyleDuration": 0.0411,
+        "LayoutCount": 0,
+        "RecalcStyleCount": 168
+      },
+      {
+        "mobile": false,
+        "selector": "#story",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {},
+        "TaskDuration": 0.5095,
+        "ScriptDuration": 0.0681,
+        "LayoutDuration": 0.0033,
+        "RecalcStyleDuration": 0.1281,
+        "LayoutCount": 7,
+        "RecalcStyleCount": 410
+      },
+      {
+        "mobile": false,
+        "selector": "#parsing",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {},
+        "TaskDuration": 0.7478,
+        "ScriptDuration": 0.0725,
+        "LayoutDuration": 0.1038,
+        "RecalcStyleDuration": 0.0995,
+        "LayoutCount": 145,
+        "RecalcStyleCount": 474
+      },
+      {
+        "mobile": false,
+        "selector": "#intro",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {},
+        "TaskDuration": 0.1901,
+        "ScriptDuration": 0.0293,
+        "LayoutDuration": 0.0001,
+        "RecalcStyleDuration": 0.0114,
+        "LayoutCount": 1,
+        "RecalcStyleCount": 220
+      },
+      {
+        "mobile": true,
+        "selector": ".hero",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {},
+        "TaskDuration": 0.3257,
+        "ScriptDuration": 0.0359,
+        "LayoutDuration": 0,
+        "RecalcStyleDuration": 0.0356,
+        "LayoutCount": 0,
+        "RecalcStyleCount": 167
+      },
+      {
+        "mobile": true,
+        "selector": "#story",
+        "frames": {
+          "count": 168,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {},
+        "TaskDuration": 0.567,
+        "ScriptDuration": 0.0581,
+        "LayoutDuration": 0.0047,
+        "RecalcStyleDuration": 0.1217,
+        "LayoutCount": 7,
+        "RecalcStyleCount": 408
+      },
+      {
+        "mobile": true,
+        "selector": "#parsing",
+        "frames": {
+          "count": 169,
+          "p95": 16.799999999999272,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {
+          "story": 2,
+          "parsing": 2,
+          "other": 24
+        },
+        "TaskDuration": 0.5819,
+        "ScriptDuration": 0.0488,
+        "LayoutDuration": 0.0163,
+        "RecalcStyleDuration": 0.0648,
+        "LayoutCount": 65,
+        "RecalcStyleCount": 474
+      },
+      {
+        "mobile": true,
+        "selector": "#intro",
+        "frames": {
+          "count": 169,
+          "p95": 16.700000000000728,
+          "over33": 0,
+          "over50": 0
+        },
+        "rectReads": {},
+        "TaskDuration": 0.1727,
+        "ScriptDuration": 0.0186,
+        "LayoutDuration": 0.0004,
+        "RecalcStyleDuration": 0.0116,
+        "LayoutCount": 1,
+        "RecalcStyleCount": 248
+      }
+    ]
+  },
+  "summary": [
+    {
+      "device": "desktop",
+      "taskSecondsBefore": 5.2519,
+      "taskSecondsAfter": 2.2328,
+      "taskReductionPercent": 57.5,
+      "layoutCountBefore": 4860,
+      "layoutCountAfter": 153
+    },
+    {
+      "device": "mobile",
+      "taskSecondsBefore": 4.1284,
+      "taskSecondsAfter": 1.6473,
+      "taskReductionPercent": 60.1,
+      "layoutCountBefore": 768,
+      "layoutCountAfter": 73
+    }
+  ]
+}

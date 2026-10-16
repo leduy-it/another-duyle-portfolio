@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Michael Le's alternate portfolio — the author's Foundable design, independently hosted.",
+  "description": "Michael Le's alternate portfolio \u2014 the author's Foundable design, independently hosted.",
   "engines": {
     "node": ">=22"
   },
@@ -13,7 +13,9 @@
     "test": "node --test tests/*.test.mjs",
     "test:browser": "node tests/browser.mjs",
     "format": "prettier --write src scripts api tests *.json *.md docs/*.md",
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "test:motion": "node tests/motion.mjs",
+    "profile:scroll": "node scripts/profile-scroll.mjs"
   },
   "devDependencies": {
     "cheerio": "^1.2.0",

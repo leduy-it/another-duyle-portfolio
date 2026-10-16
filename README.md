@@ -27,6 +27,7 @@ npm run build
 npm run check
 npm test
 npm run test:browser
+npm run test:motion
 ```
 
 Browser verification uses the installed Google Chrome. Set `TEST_URL` to check
@@ -45,7 +46,8 @@ is dispatched.
 - `scripts/build.mjs`: deterministic static output into `dist/`.
 - `api/index.js`: shared Vercel function for `/api/contact` and `/api/health`.
 
-See [the implementation brief](docs/implementation.md) and
+See [scroll motion and performance evidence](docs/scroll-performance.md),
+[the implementation brief](docs/implementation.md) and
 [source provenance](docs/source-manifest.json).
 
 ## Contact

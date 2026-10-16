@@ -1,0 +1,39 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  class="trajectory-art"
+  viewBox="0 0 240 136"
+  fill="none"
+  aria-hidden="true"
+>
+  <defs>
+    <marker
+      id="motion-arrow"
+      markerWidth="5"
+      markerHeight="5"
+      refX="4"
+      refY="2.5"
+      orient="auto"
+    >
+      <path d="M0 .5 4 2.5 0 4.5" />
+    </marker>
+  </defs>
+  <path
+    class="plot-grid"
+    d="M16 30H224M16 66H224M16 102H224M48 18V112M120 18V112M192 18V112"
+  />
+  <path class="plot-axis" d="M14 112H226M16 114V16" />
+  <path class="plot-ghost" d="M25 106Q120 -51 215 106" />
+  <path class="plot-curve" d="M25 106Q120 -51 215 106" pathLength="1" />
+  <path class="plot-guide" d="M120 27.5V112" />
+  <circle class="plot-apex" cx="120" cy="27.5" r="4" />
+  <path
+    class="plot-velocity"
+    d="M126 27.5H169"
+    marker-end="url(#motion-arrow)"
+  />
+  <text x="175" y="31">vₓ</text>
+  <text class="plot-caption" x="92" y="17">vᵧ = 0</text>
+  <text class="plot-label" x="7" y="12">y</text>
+  <text class="plot-label" x="229" y="116">x</text>
+  <text class="plot-label" x="111" y="127">apex</text>
+</svg>

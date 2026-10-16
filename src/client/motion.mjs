@@ -1,58 +1,7 @@
+import { frameLoop, geometryCache } from "./motion-runtime.mjs";
+
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 const smooth = (value) => value * value * (3 - 2 * value);
-
-/** One frame owner for all scroll, pointer and canvas effects. No perpetual rAF list. */
-function frameLoop() {
-  const tasks = new Map();
-  let pending = 0,
-    previous = 0;
-  const tick = (time) => {
-    pending = 0;
-    if (document.hidden) return;
-    const delta = Math.min(64, time - (previous || time - 16));
-    previous = time;
-    let continueAnimating = false;
-    for (const [task, active] of tasks) {
-      if (!active) continue;
-      const again = Boolean(task(time, delta));
-      tasks.set(task, again);
-      continueAnimating ||= again;
-    }
-    if (continueAnimating) schedule();
-  };
-  const schedule = () => {
-    if (!pending && !document.hidden) pending = requestAnimationFrame(tick);
-  };
-  const request = () => {
-    for (const task of tasks.keys()) tasks.set(task, true);
-    schedule();
-  };
-  const visible = () => {
-    previous = 0;
-    if (document.hidden) {
-      cancelAnimationFrame(pending);
-      pending = 0;
-    } else request();
-  };
-  document.addEventListener("visibilitychange", visible);
-  addEventListener("scroll", request, { passive: true });
-  addEventListener("resize", request);
-  return {
-    add(task) {
-      tasks.set(task, true);
-      request();
-      return () => tasks.delete(task);
-    },
-    request,
-    destroy() {
-      cancelAnimationFrame(pending);
-      tasks.clear();
-      document.removeEventListener("visibilitychange", visible);
-      removeEventListener("scroll", request);
-      removeEventListener("resize", request);
-    },
-  };
-}
 
 function reveals(reduced) {
   document.querySelectorAll("[data-reveal-words]").forEach((heading) => {
@@ -88,7 +37,7 @@ function reveals(reduced) {
   );
   document.querySelectorAll(".rv,.split,.diagram").forEach((el) => {
     el.querySelectorAll(".w>span").forEach((word, index) =>
-      word.style.setProperty("--word-delay", `${Math.min(index * 45, 420)}ms`),
+      word.style.setProperty("--word-delay", `${Math.min(index * 28, 280)}ms`),
     );
     if (reduced) el.classList.add("in", "draw");
     else observer.observe(el);
@@ -108,18 +57,23 @@ function terrain(canvas, frames, reduced, cleanup) {
     lastPaint = 0;
   let mouse = [-9000, -9000],
     target = [-9000, -9000],
-    exclusions = [];
+    dots = [];
+  const constrained =
+    reduced ||
+    matchMedia("(pointer:coarse)").matches ||
+    (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+    navigator.hardwareConcurrency <= 4;
   const dark = canvas.hasAttribute("data-dark");
   const resize = () => {
     width = canvas.clientWidth;
     height = canvas.clientHeight;
-    ratio = Math.min(devicePixelRatio || 1, 1.75);
+    ratio = Math.min(devicePixelRatio || 1, constrained ? 1 : 1.5);
     canvas.width = Math.round(width * ratio);
     canvas.height = Math.round(height * ratio);
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     lastPaint = 0;
     const bounds = canvas.getBoundingClientRect();
-    exclusions = [...host.querySelectorAll("h1,.lede")].map((el) => {
+    const exclusions = [...host.querySelectorAll("h1,.lede")].map((el) => {
       const box = el.getBoundingClientRect();
       return [
         box.left - bounds.left - 24,
@@ -128,26 +82,15 @@ function terrain(canvas, frames, reduced, cleanup) {
         box.bottom - bounds.top + 20,
       ];
     });
-    frames.request();
-  };
-  const paint = () => {
-    context.clearRect(0, 0, width, height);
-    const gap = width < 650 ? 22 : 24;
+    dots = [];
+    const gap = width < 650 ? 24 : 28;
     const rows = Math.ceil(height / gap),
       columns = Math.ceil(width / gap);
     for (let row = 0; row <= rows; row++)
       for (let column = 0; column <= columns; column++) {
         const x = column * gap,
+          y = row * gap,
           depth = row / rows;
-        const wave =
-          Math.sin(column * 0.13 + phase * 0.6) *
-            Math.cos(row * 0.17 - phase * 0.4) +
-          Math.sin((column + row) * 0.07 + phase * 0.3);
-        let y = row * gap - wave * depth * depth * 14;
-        const distance = Math.hypot(x - mouse[0], y - mouse[1]);
-        const influence = clamp(1 - distance / 150);
-        y -= influence * 16;
-        let alpha = (0.06 + depth * 0.4) * (0.2 + clamp(depth / 0.35) * 0.8);
         let exclusion = 1;
         for (const [left, top, right, bottom] of exclusions)
           exclusion = Math.min(
@@ -159,15 +102,48 @@ function terrain(canvas, frames, reduced, cleanup) {
               ) / 58,
             ),
           );
-        if (!exclusion) continue;
-        alpha *= exclusion;
-        context.fillStyle =
-          influence > 0.35
-            ? `rgba(47,91,255,${Math.min(0.9, alpha + influence * 0.6)})`
-            : `${dark ? "rgba(250,250,248," : "rgba(11,11,12,"}${alpha})`;
-        const size = 0.65 + Math.max(0, wave) * depth * 0.85 + influence * 1.35;
-        context.fillRect(x - size, y - size, size * 2, size * 2);
+        if (exclusion)
+          dots.push({
+            x,
+            y,
+            row,
+            column,
+            depth,
+            alpha:
+              (0.06 + depth * 0.4) *
+              (0.2 + clamp(depth / 0.35) * 0.8) *
+              exclusion,
+          });
       }
+    frames.request();
+  };
+  const paint = () => {
+    context.clearRect(0, 0, width, height);
+    const pointerActive = mouse[0] > -5000;
+    const rowWaves = [],
+      columnWaves = [],
+      diagonalWaves = [];
+    for (const dot of dots) {
+      const { x, row, column, depth, alpha } = dot;
+      rowWaves[row] ??= Math.cos(row * 0.17 - phase * 0.4);
+      columnWaves[column] ??= Math.sin(column * 0.13 + phase * 0.6);
+      diagonalWaves[row + column] ??= Math.sin(
+        (row + column) * 0.07 + phase * 0.3,
+      );
+      const wave =
+        columnWaves[column] * rowWaves[row] + diagonalWaves[row + column];
+      let y = dot.y - wave * depth * depth * 14;
+      const influence = pointerActive
+        ? clamp(1 - Math.hypot(x - mouse[0], y - mouse[1]) / 150)
+        : 0;
+      y -= influence * 16;
+      context.fillStyle =
+        influence > 0.35
+          ? `rgba(47,91,255,${Math.min(0.9, alpha + influence * 0.6)})`
+          : `${dark ? "rgba(250,250,248," : "rgba(11,11,12,"}${alpha})`;
+      const size = 0.65 + Math.max(0, wave) * depth * 0.85 + influence * 1.35;
+      context.fillRect(x - size, y - size, size * 2, size * 2);
+    }
   };
   const pointer = (event) => {
     const rect = canvas.getBoundingClientRect();
@@ -186,14 +162,14 @@ function terrain(canvas, frames, reduced, cleanup) {
   observer.observe(host);
   const sizeObserver = new ResizeObserver(resize);
   sizeObserver.observe(canvas);
-  if (!reduced && matchMedia("(pointer:fine)").matches) {
+  if (!constrained && matchMedia("(pointer:fine)").matches) {
     host.addEventListener("pointermove", pointer);
     host.addEventListener("pointerleave", leave);
   }
   cleanup.push(
-    frames.add((time, delta) => {
+    frames.add((time) => {
       if (!active) return false;
-      if (reduced) {
+      if (constrained || width < 650) {
         if (!lastPaint) {
           paint();
           lastPaint = time;
@@ -202,8 +178,8 @@ function terrain(canvas, frames, reduced, cleanup) {
       }
       mouse[0] += (target[0] - mouse[0]) * 0.16;
       mouse[1] += (target[1] - mouse[1]) * 0.16;
-      if (time - lastPaint >= 32) {
-        phase += delta * 0.00065;
+      if (time - lastPaint >= (mouse[0] > -5000 ? 16 : 40)) {
+        phase = time * 0.0003;
         paint();
         lastPaint = time;
       }
@@ -224,13 +200,24 @@ function timedElements(root) {
     const [a = 0, b = a + 0.01, c = 2, d = 2] = el.dataset.t
       .split(/\s+/)
       .map(Number);
-    return { el, a, b: Math.max(a + 0.001, b), c, d: Math.max(c + 0.001, d) };
+    return {
+      el,
+      a,
+      b: Math.max(a + 0.001, b),
+      c,
+      d: Math.max(c + 0.001, d),
+      last: "",
+    };
   });
 }
 function renderTimed(elements, progress) {
-  for (const { el, a, b, c, d } of elements) {
+  for (const item of elements) {
+    const { el, a, b, c, d } = item;
     const enter = a <= 0 ? 1 : smooth(clamp((progress - a) / (b - a)));
     const exit = smooth(clamp((progress - c) / (d - c)));
+    const state = `${enter.toFixed(4)}:${exit.toFixed(4)}`;
+    if (item.last === state) continue;
+    item.last = state;
     el.style.setProperty("--e", enter.toFixed(4));
     el.style.setProperty("--x", exit.toFixed(4));
     const hidden = enter < 0.001 || exit > 0.999;
@@ -274,7 +261,7 @@ function sceneControls(section, count, label) {
     section.querySelector(".stage-copy") ||
     section
   ).append(controls);
-  let current = 0;
+  let current = -1;
   const go = (direction) => {
     const index = clamp(current + direction, 0, count - 1);
     const bounds = section.getBoundingClientRect();
@@ -288,6 +275,7 @@ function sceneControls(section, count, label) {
   next.addEventListener("click", () => go(1));
   return {
     update(index) {
+      if (current === index) return;
       current = index;
       progress.textContent = `${label} ${String(index + 1).padStart(2, "0")} / ${String(count).padStart(2, "0")}`;
       previous.disabled = index === 0;
@@ -299,7 +287,7 @@ function sceneControls(section, count, label) {
   };
 }
 
-function story(section, frames, reduced, cleanup) {
+function story(section, frames, geometry, reduced, cleanup) {
   const field = section.querySelector(".field"),
     copies = [...section.querySelectorAll(".copies .copy")];
   const fieldObserver = new ResizeObserver(() => {
@@ -340,24 +328,31 @@ function story(section, frames, reduced, cleanup) {
     chapters = [...section.querySelectorAll(".chaps li")];
   const bar = section.querySelector(".pbar i"),
     controls = sceneControls(section, 4, "SC.");
+  const box = geometry.track(section);
   let progress = 0,
+    lastChapter = -1,
     initial = true;
   cleanup.push(
     frames.add((_, delta) => {
-      const bounds = section.getBoundingClientRect(),
-        target = clamp(-bounds.top / Math.max(1, bounds.height - innerHeight));
+      const target = clamp(
+        (scrollY - box.top) / Math.max(1, box.height - innerHeight),
+      );
+      if (!initial && target === progress) return false;
       progress =
         initial || Math.abs(target - progress) > 0.3
           ? target
-          : progress + (target - progress) * (1 - Math.exp(-delta / 75));
+          : progress + (target - progress) * (1 - Math.exp(-delta / 50));
       initial = false;
       if (Math.abs(target - progress) < 0.0004) progress = target;
       renderTimed(elements, progress);
       const chapter =
         progress < 0.265 ? 0 : progress < 0.525 ? 1 : progress < 0.775 ? 2 : 3;
-      chapters.forEach((el, index) =>
-        el.classList.toggle("on", index === chapter),
-      );
+      if (chapter !== lastChapter) {
+        chapters.forEach((el, index) =>
+          el.classList.toggle("on", index === chapter),
+        );
+        lastChapter = chapter;
+      }
       if (bar) bar.style.transform = `scaleX(${progress})`;
       controls.update(chapter);
       return Math.abs(target - progress) > 0.0004;
@@ -367,7 +362,7 @@ function story(section, frames, reduced, cleanup) {
   fitBox(field);
 }
 
-function parsingConnections(section) {
+function parsingConnections(section, geometry) {
   const ns = "http://www.w3.org/2000/svg",
     field = section.querySelector(".f1-field");
   const svg = document.createElementNS(ns, "svg");
@@ -397,57 +392,85 @@ function parsingConnections(section) {
     };
   });
   field.append(svg);
-  const anchor = (rect, side, bounds, offset = 0) => ({
+  // Use final layout boxes, excluding animated transforms. Connectors can draw
+  // once toward their destination instead of forcing layout on every frame.
+  const layoutBox = (el) => {
+    let left = 0,
+      top = 0;
+    for (let node = el; node && node !== field; node = node.offsetParent) {
+      left += node.offsetLeft;
+      top += node.offsetTop;
+    }
+    return {
+      left,
+      top,
+      right: left + el.offsetWidth,
+      bottom: top + el.offsetHeight,
+      width: el.offsetWidth,
+      height: el.offsetHeight,
+    };
+  };
+  const anchor = (rect, side, offset = 0) => ({
     x:
-      (side === "left"
+      side === "left"
         ? rect.left - 5
         : side === "right"
           ? rect.right + 5
-          : rect.left + rect.width * 0.5) - bounds.left,
+          : rect.left + rect.width * 0.5,
     y:
-      (side === "top"
+      side === "top"
         ? rect.top - 5
         : side === "bottom"
           ? rect.bottom + 5
-          : rect.top + rect.height * (0.5 + offset)) - bounds.top,
+          : rect.top + rect.height * (0.5 + offset),
+  });
+  let size = "",
+    dirty = true,
+    lastIndex = -1;
+  geometry.observe(field);
+  const stop = geometry.read(() => {
+    if (innerWidth <= 900) return;
+    size = `0 0 ${field.clientWidth} ${field.clientHeight}`;
+    for (const route of routes) {
+      const a = anchor(layoutBox(route.source), route.exit),
+        b = anchor(layoutBox(route.target), route.entry, route.offset);
+      const vertical = ["top", "bottom"].includes(route.exit);
+      const middle = vertical ? (a.y + b.y) / 2 : (a.x + b.x) / 2;
+      route.d = vertical
+        ? `M${a.x},${a.y} C${a.x},${middle} ${b.x},${middle} ${b.x},${b.y}`
+        : `M${a.x},${a.y} C${middle},${a.y} ${middle},${b.y} ${b.x},${b.y}`;
+      route.b = b;
+    }
+    dirty = true;
   });
   return {
     update(index) {
-      if (innerWidth <= 900) return;
-      const bounds = field.getBoundingClientRect();
-      svg.setAttribute("viewBox", `0 0 ${bounds.width} ${bounds.height}`);
-      for (const route of routes) {
-        if (!route.source || !route.target) continue;
-        const a = anchor(
-            route.source.getBoundingClientRect(),
-            route.exit,
-            bounds,
-          ),
-          b = anchor(
-            route.target.getBoundingClientRect(),
-            route.entry,
-            bounds,
-            route.offset,
-          );
-        const vertical = ["top", "bottom"].includes(route.exit);
-        const middle = vertical ? (a.y + b.y) / 2 : (a.x + b.x) / 2;
-        const d = vertical
-          ? `M${a.x},${a.y} C${a.x},${middle} ${b.x},${middle} ${b.x},${b.y}`
-          : `M${a.x},${a.y} C${middle},${a.y} ${middle},${b.y} ${b.x},${b.y}`;
-        if (route.path.getAttribute("d") !== d) route.path.setAttribute("d", d);
-        route.dot.setAttribute("cx", b.x);
-        route.dot.setAttribute("cy", b.y);
-        route.path.classList.toggle("on", index >= route.stage);
-        route.dot.classList.toggle("on", index >= route.stage);
+      if (innerWidth <= 900 || (!dirty && index === lastIndex)) return;
+      if (dirty) {
+        svg.setAttribute("viewBox", size);
+        for (const route of routes) {
+          route.path.setAttribute("d", route.d);
+          route.dot.setAttribute("cx", route.b.x);
+          route.dot.setAttribute("cy", route.b.y);
+        }
+        dirty = false;
+      }
+      if (index !== lastIndex) {
+        for (const route of routes) {
+          route.path.classList.toggle("on", index >= route.stage);
+          route.dot.classList.toggle("on", index >= route.stage);
+        }
+        lastIndex = index;
       }
     },
     remove() {
+      stop();
       svg.remove();
     },
   };
 }
 
-function parsing(section, frames, reduced, cleanup) {
+function parsing(section, frames, geometry, reduced, cleanup) {
   const steps = [...section.querySelectorAll(".f1-steps li")];
   if (reduced) {
     section.classList.add("f1-rm");
@@ -459,9 +482,13 @@ function parsing(section, frames, reduced, cleanup) {
     return;
   }
   const controls = sceneControls(section, 6, "ST."),
-    connections = parsingConnections(section);
+    connections = parsingConnections(section, geometry),
+    box = geometry.track(section),
+    bar = section.querySelector(".f1-bar i"),
+    scanner = section.querySelector(".f1-scan");
   let previous = -1,
-    settlingUntil = 0;
+    lastProgress = -1,
+    lastScan = -1;
   section
     .querySelectorAll(".f1-space .pt,.f1-space .hit")
     .forEach((point, i) => {
@@ -483,26 +510,27 @@ function parsing(section, frames, reduced, cleanup) {
     [".f1-answer", [5]],
   ];
   cleanup.push(
-    frames.add((time) => {
-      const bounds = section.getBoundingClientRect(),
-        progress = clamp(
-          -bounds.top / Math.max(1, bounds.height - innerHeight),
-        );
-      section.style.setProperty("--p", progress.toFixed(4));
-      section.style.setProperty(
-        "--scan",
-        String(clamp((progress * 6 - 1) / 0.9)),
+    frames.add(() => {
+      const progress = clamp(
+        (scrollY - box.top) / Math.max(1, box.height - innerHeight),
       );
+      if (progress !== lastProgress) {
+        bar.style.transform = `scaleX(${progress})`;
+        lastProgress = progress;
+      }
+      const scan = clamp((progress * 6 - 1) / 0.9);
+      if (scan !== lastScan) {
+        scanner.style.transform = `translate3d(0,${scan * 100}%,0)`;
+        lastScan = scan;
+      }
       const index = Math.min(5, Math.floor(progress * 5.999));
       if (index === previous) {
         connections.update(index);
-        return (
-          time < settlingUntil && bounds.bottom > 0 && bounds.top < innerHeight
-        );
+        return false;
       }
       previous = index;
       section.dataset.s = String(index);
-      settlingUntil = time + 1400;
+
       steps.forEach((step, n) => {
         step.classList.toggle("on", index >= n);
         step.classList.toggle("cur", index === n);
@@ -523,7 +551,7 @@ function parsing(section, frames, reduced, cleanup) {
         .forEach((el) => el.classList.toggle("on", index >= 3));
       controls.update(index);
       connections.update(index);
-      return bounds.bottom > 0 && bounds.top < innerHeight;
+      return false;
     }),
   );
   cleanup.push(() => {
@@ -611,73 +639,75 @@ function interactions(frames, reduced, cleanup) {
 
 export function initMotion(reduced) {
   const frames = frameLoop(),
-    cleanup = [() => frames.destroy(), reveals(reduced)];
+    geometry = geometryCache(frames),
+    cleanup = [
+      () => frames.destroy(),
+      () => geometry.destroy(),
+      reveals(reduced),
+    ];
   document.documentElement.classList.toggle("reduce-motion", reduced);
   document.documentElement.classList.add("motion-ready");
   document
     .querySelectorAll("canvas.terrain")
     .forEach((canvas) => terrain(canvas, frames, reduced, cleanup));
   const study = document.querySelector(".story");
-  if (study) story(study, frames, reduced, cleanup);
+  if (study) story(study, frames, geometry, reduced, cleanup);
   const parse = document.querySelector(".f1");
-  if (parse) parsing(parse, frames, reduced, cleanup);
-  const parallax = [...document.querySelectorAll("[data-par]")];
+  if (parse) parsing(parse, frames, geometry, reduced, cleanup);
+  const parallax = [...document.querySelectorAll("[data-par]")].map((el) => ({
+    el,
+    box: geometry.track(el.closest("section,article")),
+    amount: Number(el.dataset.par),
+  }));
   const list = document.querySelector(".pipe-list"),
-    axis = document.querySelector(".axis"),
+    listBox = geometry.track(list),
+    rail = list?.querySelector(".pipe-rail i");
+  const axis = document.querySelector(".axis"),
+    axisBox = geometry.track(axis),
     fill = axis?.querySelector(".fill");
-  const pipeSteps = [...document.querySelectorAll(".pipe-step")];
-  const pinnedScenes = [...document.querySelectorAll(".story,.f1")];
+  const reading = document.querySelector(".reading-progress i"),
+    back = document.querySelector(".back-top");
+  const pipeSteps = [...document.querySelectorAll(".pipe-step")].map((el) => ({
+    el,
+    box: geometry.track(el),
+  }));
+  const toc = [...document.querySelectorAll(".pipe-toc a")];
+  const pinnedScenes = [...document.querySelectorAll(".story,.f1")].map((el) =>
+    geometry.track(el),
+  );
   cleanup.push(
     frames.add(() => {
-      const total = document.documentElement.scrollHeight - innerHeight;
-      document
-        .querySelector(".reading-progress i")
-        ?.style.setProperty("--read", String(total > 0 ? scrollY / total : 0));
+      const y = scrollY,
+        height = innerHeight,
+        total = geometry.height - height;
+      if (reading)
+        reading.style.transform = `scaleX(${total > 0 ? y / total : 0})`;
       const inScene =
         !reduced &&
-        pinnedScenes.some((scene) => {
-          const bounds = scene.getBoundingClientRect();
-          return bounds.top <= 0 && bounds.bottom >= innerHeight;
-        });
-      document
-        .querySelector(".back-top")
-        ?.classList.toggle("visible", scrollY > 1000 && !inScene);
+        pinnedScenes.some(
+          (box) => box.top <= y && box.top + box.height >= y + height,
+        );
+      back?.classList.toggle("visible", y > 1000 && !inScene);
       if (!reduced)
-        parallax.forEach((el) => {
-          const parent = el.closest("section,article"),
-            bounds = parent?.getBoundingClientRect();
-          if (!bounds || bounds.bottom < 0 || bounds.top > innerHeight) return;
-          el.style.transform = `translate3d(0,${clamp(-bounds.top * Number(el.dataset.par), -48, 80)}px,0)`;
-        });
-      if (list) {
-        const bounds = list.getBoundingClientRect();
-        list.style.setProperty(
-          "--pp",
-          String(
-            reduced
-              ? 1
-              : clamp((innerHeight * 0.55 - bounds.top) / bounds.height),
-          ),
-        );
-      }
-      if (fill) {
-        const bounds = axis.getBoundingClientRect();
-        fill.style.setProperty(
-          "--fill",
-          `${reduced ? 100 : clamp((innerHeight * 0.6 - bounds.top) / bounds.height) * 100}%`,
-        );
-      }
+        for (const { el, box, amount } of parallax) {
+          const top = box.top - y;
+          if (top + box.height < 0 || top > height) continue;
+          el.style.transform = `translate3d(0,${clamp(-top * amount, -48, 80)}px,0)`;
+        }
+      if (rail)
+        rail.style.transform = `scaleY(${reduced ? 1 : clamp((height * 0.55 - listBox.top + y) / listBox.height)})`;
+      if (fill)
+        fill.style.transform = `scaleY(${reduced ? 1 : clamp((height * 0.6 - axisBox.top + y) / axisBox.height)})`;
       let current = null;
-      pipeSteps.forEach((step) => {
-        const rect = step.getBoundingClientRect();
-        const active = rect.top < innerHeight * 0.65;
-        step.classList.toggle("on", active || reduced);
-        if (active) current = step.id;
-      });
-      document.querySelectorAll(".pipe-toc a").forEach((a) => {
+      for (const { el, box } of pipeSteps) {
+        const active = box.top - y < height * 0.65;
+        el.classList.toggle("on", active || reduced);
+        if (active) current = el.id;
+      }
+      for (const a of toc) {
         if (a.hash === `#${current}`) a.setAttribute("aria-current", "step");
         else a.removeAttribute("aria-current");
-      });
+      }
       return false;
     }),
   );
@@ -685,6 +715,6 @@ export function initMotion(reduced) {
   frames.request();
   return () => {
     cleanup.reverse().forEach((fn) => fn());
-    parallax.forEach((el) => el.style.removeProperty("transform"));
+    parallax.forEach(({ el }) => el.style.removeProperty("transform"));
   };
 }

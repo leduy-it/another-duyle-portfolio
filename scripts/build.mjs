@@ -75,6 +75,9 @@ for (const [name, [path, title, description]] of Object.entries(pages)) {
       '<p class="chunk-check mono"><span aria-hidden="true">✓</span> Schema checked · source preserved</p>',
     );
     $(".f1-photo").attr("data-region-source", "");
+    $(".f1-fig svg").replaceWith(await read("src/assets/trajectory.svg"));
+    $(".f1-space svg").replaceWith(await read("src/assets/embedding.svg"));
+    $(".f1-paper").append('<span class="f1-scan"><i></i></span>');
   }
   if (name === "about")
     $(".dossier dl").append(

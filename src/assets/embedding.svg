@@ -1,0 +1,35 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  class="embedding-art"
+  viewBox="0 0 200 112"
+  fill="none"
+  aria-hidden="true"
+>
+  <path
+    class="embedding-grid"
+    d="M8 28H192M8 56H192M8 84H192M36 8V104M72 8V104M108 8V104M144 8V104M180 8V104"
+  />
+  <path class="embedding-axis" d="M8 8V104H192" />
+  <path
+    class="embedding-neighbours"
+    d="M87 39 100 50 90 62 87 39M87 39 70 27M100 50 122 32M90 62 109 83"
+  />
+  <circle class="pt" cx="19" cy="22" r="2" />
+  <circle class="pt" cx="30" cy="78" r="2" />
+  <circle class="pt" cx="50" cy="44" r="2" />
+  <circle class="pt" cx="70" cy="27" r="2" />
+  <circle class="pt" cx="74" cy="87" r="2" />
+  <circle class="pt" cx="122" cy="32" r="2" />
+  <circle class="pt" cx="109" cy="83" r="2" />
+  <circle class="pt" cx="149" cy="18" r="2" />
+  <circle class="pt" cx="172" cy="70" r="2" />
+  <circle class="pt" cx="148" cy="92" r="2" />
+  <circle class="pt" cx="182" cy="40" r="2" />
+  <circle class="ring" cx="96" cy="49" r="25" />
+  <circle class="hit" cx="87" cy="39" r="3.2" />
+  <circle class="hit" cx="100" cy="50" r="3.2" />
+  <circle class="hit h3" cx="90" cy="62" r="3.2" />
+  <circle class="q" cx="96" cy="49" r="2.6" />
+  <text x="104" y="46">q</text>
+  <text class="embedding-label" x="135" y="107">semantic space</text>
+</svg>
