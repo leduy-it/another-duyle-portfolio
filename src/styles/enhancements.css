@@ -1016,6 +1016,10 @@ html:not(.motion-ready) .ex-b code {
   .f1-title {
     font-size: clamp(32px, 3.25vw, 48px);
   }
+  .f1-title > .sig {
+    display: block;
+    white-space: nowrap;
+  }
   .f1-steps li {
     padding: 5px 0;
   }
